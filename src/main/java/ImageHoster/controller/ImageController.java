@@ -106,7 +106,8 @@ public class ImageController {
             model.addAttribute("editError",error);
             List<Comment> comments = imageService.getCommentsForImage(image.getUser().getId(), image.getId());
             model.addAttribute("comments", comments);
-            return "/images/image";
+            return "images/image";
+            //return "redirect:/images/" + image.getId() + "/" + image.getTitle();
         }
         else{
             return "images/edit";
@@ -160,8 +161,10 @@ public class ImageController {
         model.addAttribute("image", image);
         model.addAttribute("tags", tags);
         if(loggedUser.getId() != imageService.getImageOwner(imageId).getId()){
+            List<Comment> comments = imageService.getCommentsForImage(image.getUser().getId(), image.getId());
+            model.addAttribute("comments", comments);
             model.addAttribute("deleteError",error);
-            return "/images/image";
+            return "images/image";
         }
         else {
             imageService.deleteImage(imageId);
