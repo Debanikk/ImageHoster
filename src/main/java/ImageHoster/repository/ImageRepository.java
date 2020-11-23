@@ -121,10 +121,11 @@ public class ImageRepository {
         return image.getUser();
     }
 
+    //Method to get image comments for an image
     public List<Comment> getImageComments(Integer userId, Integer imageId){
         List<Comment> commentList = new ArrayList<>();
         EntityManager em = emf.createEntityManager();
-        TypedQuery<Comment> typedQuery = em.createQuery("SELECT c from Comment c WHERE c.user.id = :userId AND c.image.id = :imageId", Comment.class).setParameter("userId",userId).setParameter("imageId",imageId);
+        TypedQuery<Comment> typedQuery = em.createQuery("SELECT c from Comment c WHERE c.image.id = :imageId", Comment.class).setParameter("imageId",imageId);
         commentList = typedQuery.getResultList();
         return commentList;
     }

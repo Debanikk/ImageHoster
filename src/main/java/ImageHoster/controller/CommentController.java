@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Controller
 public class CommentController {
@@ -23,10 +26,16 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @RequestMapping(value="/image/{image.Id}/{image.Title}/comments", method = RequestMethod.POST)
-    public String uploadComment(@RequestParam("comment") String comment, @RequestParam("image") Image image , HttpSession session){
+    @RequestMapping(value="/image/{imageId}/{imageTitle}/comments", method = RequestMethod.POST)
+    public String uploadComment(@RequestParam("comment") String comment, @PathVariable("imageId") Integer imageId , @PathVariable("imageTitle") String imageTitle ,HttpSession session){
         User user = (User) session.getAttribute("loggeduser");
-
-        return "index";
+        Image image = imageService.getImageByTitle(imageId, imageTitle);
+        Comment newComment = new Comment();
+        newComment.setImage(image);
+        newComment.setUser(user);
+        newComment.setText(comment);
+        newComment.setCreatedDate(LocalDate.now());
+        commentService.uploadComment(newComment);
+        return "redirect:/images/" + newComment.getImage().getId() + "/" + newComment.getImage().getTitle();
     }
 }
